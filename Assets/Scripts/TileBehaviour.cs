@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//LO QUE PASSA ÉS QUE SA CURRENT CASELLA NO S'ACTUALITZA, PER AIXÒ HO CALCULA MALAMENT
-
 
 public class TileBehaviour : MonoBehaviour
 {
@@ -31,12 +29,23 @@ public class TileBehaviour : MonoBehaviour
 
     private void OnMouseExit()
     {
-        this.gameObject.GetComponent<SpriteRenderer>().color = defaultColor;
+        gameObject.GetComponent<SpriteRenderer>().color = defaultColor;
     }
 
     private void OnMouseDown()
     {
         gameManagerScript.CheckDestination(tilePositon, 1, _spriteRenderer);
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            gameManagerScript.CheckDestination(tilePositon, 2, _spriteRenderer);
+        }
+        if (Input.GetKeyUp(KeyCode.Y))
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = defaultColor;
+        }
     }
 
 }

@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private int whiteValue;
 
     public GameObject tilesParent;
+    public GameObject mainMenuPanel;
     #endregion
 
     /*SCENE BUILT
@@ -34,9 +35,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        CreateChessBoard();
+        if((SceneManager.GetActiveScene().buildIndex == 1) || (SceneManager.GetActiveScene().buildIndex == 2))
+        {
+            CreateChessBoard();
 
-        CreateChessPiece();
+            CreateChessPiece();
+        }
     }
 
     private void CreateChessBoard()
@@ -130,7 +134,7 @@ public class GameManager : MonoBehaviour
     {
         horseGO = new GameObject("Horse");
         SpriteRenderer horseSpriteRenderer = horseGO.AddComponent<SpriteRenderer>();
-        horseSpriteRenderer.sprite = queenSprite;
+        horseSpriteRenderer.sprite = horseSprite;
         horseSpriteRenderer.sortingOrder = 10;
         horseGO.transform.position = currentPosition;
     }
@@ -139,6 +143,7 @@ public class GameManager : MonoBehaviour
     /*mouseIsOn és una variable que determina si sa funció ha estat cridada des de OnMouseDown o des de OnMouseOver
      * mouseIsOn = 0 --> cridada des de OnMouseOver
      * mouseIsOn = 1 --> cridada des de OnMouseDown
+     * mouseIsOn = 2 --> cridada des de Key Y
      */
 
     public void CheckDestination(Vector3Int destination, int mouseIsOn, SpriteRenderer _spriteRenderer)
@@ -149,8 +154,8 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 break;
+
             case 1:
-                
                 if (((Mathf.Abs(DCvector.x) == Mathf.Abs(DCvector.y)) || (destination.y == currentPosition.y) || (destination.x == currentPosition.x)))
                 {
                     if (mouseIsOn == 0)
@@ -161,20 +166,34 @@ public class GameManager : MonoBehaviour
                     {
                         MoveChessPiece(destination, queenGO);
                     }
+                    else if (mouseIsOn == 2)
+                    {
+                        _spriteRenderer.color = Color.green;
+                    }
                 }
                 break;
-            case 2:
-                if (!(Mathf.Abs(Mathf.Abs(DCvector.x) - Mathf.Abs(DCvector.y)) == 1)) //si està a una casella que no pot anar
-                {
-                    Debug.Log("HORSE MOVEMENT NOT VALID");
 
+            case 2:
+                if (((Mathf.Abs(DCvector.x)== 1) && (Mathf.Abs(DCvector.y) == 2)) || ((Mathf.Abs(DCvector.x) == 2) && (Mathf.Abs(DCvector.y) == 1)))
+                {
                     if (mouseIsOn == 0)
                     {
-                        _spriteRenderer.color = Color.red;
+                        _spriteRenderer.color = Color.green;
                     }
                     else if (mouseIsOn == 1)
                     {
                         MoveChessPiece(destination, horseGO);
+                    }
+                    else if(mouseIsOn == 2)
+                    {
+                        _spriteRenderer.color = Color.green;
+                    }
+                }
+                else 
+                {
+                    if (mouseIsOn != 2)
+                    {
+                        _spriteRenderer.color = Color.red;
                     }
                 }
                 break;
@@ -187,5 +206,13 @@ public class GameManager : MonoBehaviour
         currentPosition = destination;
     }
 
+    public void PlayButtonMM()
+    {
+        mainMenuPanel.SetActive(false);
+    }
 
+    public void ChangeSceneTo(int i)
+    {
+        SceneManager.LoadScene(i);
+    }
 }
